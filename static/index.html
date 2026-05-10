@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>EAT</title>
+  <link rel="stylesheet" href="/style.css">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#000000">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="EAT">
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="header-inner">
+      <button class="wordmark" id="wordmark">EAT</button>
+      <button class="ghost ghost-muted" id="back-btn" style="display:none">← Receitas</button>
+    </div>
+  </div>
+</header>
+
+<!-- ─── LIST VIEW ─── -->
+<div id="list-view">
+  <div class="wrap">
+
+    <div id="mode-url">
+      <div class="add-form">
+        <input id="url-input" type="url" placeholder="Cole o link de uma receita…" autocomplete="off" spellcheck="false">
+        <button id="add-btn">Adicionar</button>
+      </div>
+      <p class="status" id="status"></p>
+      <p class="mode-toggle">
+        <button class="ghost ghost-muted" id="toggle-text">texto →</button>
+        <span class="mode-sep">·</span>
+        <button class="ghost ghost-muted" id="toggle-photo">foto →</button>
+      </p>
+    </div>
+
+    <div id="mode-text" style="display:none">
+      <textarea id="text-input" placeholder="Cole o texto da receita aqui…" rows="7"></textarea>
+      <div class="add-form" style="margin-top:8px">
+        <input id="source-input" type="url" placeholder="URL de origem (opcional)" autocomplete="off" spellcheck="false">
+        <button id="add-text-btn">Adicionar</button>
+      </div>
+      <p class="status" id="status-text"></p>
+      <p class="mode-toggle"><button class="ghost ghost-muted" id="toggle-url">← usar link</button></p>
+    </div>
+
+    <div id="mode-photo" style="display:none">
+      <label class="photo-mode-area" for="recipe-photo-input">
+        Tirar foto ou enviar arquivo
+      </label>
+      <input type="file" id="recipe-photo-input" accept="image/*" style="display:none">
+      <p class="status" id="status-photo"></p>
+      <p class="mode-toggle"><button class="ghost ghost-muted" id="toggle-url-from-photo">← usar link</button></p>
+    </div>
+
+    <div class="filters">
+      <div class="seg-group" id="filter-tipo">
+        <button class="seg-btn active" data-value="">Tudo</button>
+        <button class="seg-btn" data-value="salgado">Salgado</button>
+        <button class="seg-btn" data-value="doce">Doce</button>
+        <button class="seg-btn" data-value="bebida">Bebida</button>
+      </div>
+      <div class="seg-group" id="filter-status">
+        <button class="seg-btn active" data-value="">Tudo</button>
+        <button class="seg-btn" data-value="quero_fazer">Quero fazer</button>
+        <button class="seg-btn" data-value="ja_fiz">Já fiz</button>
+      </div>
+      <select id="filter-source" class="source-select">
+        <option value="">Todas as fontes</option>
+      </select>
+    </div>
+
+    <div class="search-wrap">
+      <input id="search" type="search" placeholder="Pesquisar…">
+    </div>
+
+    <div id="recipe-list" class="recipe-list"></div>
+  </div>
+</div>
+
+<!-- ─── DETAIL VIEW ─── -->
+<div id="detail-view">
+  <div class="wrap">
+
+    <!-- Photo -->
+    <p class="section-label" style="margin-bottom:12px">Foto</p>
+    <div class="photo-wrap" id="photo-wrap">
+      <img class="recipe-photo" id="d-photo" alt="" style="display:none">
+      <div class="photo-placeholder" id="photo-placeholder">
+        Arraste uma imagem ou clique para adicionar
+      </div>
+      <div class="photo-hover-bar" id="photo-hover-bar">
+        <label class="photo-action" for="photo-file-input">Arquivo</label>
+        <span class="photo-sep">·</span>
+        <button class="photo-action" id="photo-url-btn">URL</button>
+      </div>
+      <input type="file" id="photo-file-input" accept="image/*" style="display:none">
+    </div>
+
+    <!-- URL input (shown when "URL" clicked) -->
+    <div class="photo-url-row" id="photo-url-row" style="display:none">
+      <input type="url" id="photo-url-input" placeholder="URL da imagem…" autocomplete="off">
+      <button id="photo-url-ok">OK</button>
+      <button id="photo-url-cancel">Cancelar</button>
+    </div>
+
+    <div class="recipe-header">
+      <h1 class="recipe-title" id="d-title"></h1>
+      <p class="recipe-meta" id="d-meta"></p>
+    </div>
+
+    <div class="edit-actions" id="edit-actions">
+      <button class="ghost ghost-muted" id="edit-btn">Editar</button>
+      <button class="ghost" id="save-btn" style="display:none">Salvar</button>
+      <button class="ghost ghost-muted" id="cancel-btn" style="display:none">Cancelar</button>
+    </div>
+
+    <!-- Categories -->
+    <div class="cat-row">
+      <div class="cat-col">
+        <p class="cat-label">Tipo</p>
+        <div class="seg-group" id="detail-tipo">
+          <button class="seg-btn" data-value="salgado">Salgado</button>
+          <button class="seg-btn" data-value="doce">Doce</button>
+          <button class="seg-btn" data-value="bebida">Bebida</button>
+        </div>
+      </div>
+      <div class="cat-col">
+        <p class="cat-label">Status</p>
+        <div class="seg-group" id="detail-status">
+          <button class="seg-btn" data-value="quero_fazer">Quero fazer</button>
+          <button class="seg-btn" data-value="ja_fiz">Já fiz</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <p class="section-label">Ingredientes</p>
+      <ul class="ingredients" id="d-ingredients"></ul>
+    </div>
+
+    <div class="section">
+      <p class="section-label">Modo de Preparo</p>
+      <ol class="instructions" id="d-instructions"></ol>
+    </div>
+
+    <a id="d-source" class="source-link" href="#" target="_blank" rel="noopener"></a>
+
+  </div>
+</div>
+
+<script src="/app.js"></script>
+<script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');</script>
+</body>
+</html>
