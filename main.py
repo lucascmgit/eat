@@ -32,6 +32,7 @@ class UpdateRecipeRequest(BaseModel):
     image_url: Optional[str] = None
     title: Optional[str] = None
     servings: Optional[str] = None
+    source_url: Optional[str] = None
     ingredients: Optional[list] = None
     instructions: Optional[list] = None
 

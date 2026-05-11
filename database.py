@@ -115,6 +115,8 @@ def update_recipe(slug: str, fields: dict) -> Optional[dict]:
         allowed["title"] = fields["title"].strip()
     if "servings" in fields and isinstance(fields["servings"], str):
         allowed["servings"] = fields["servings"].strip()
+    if "source_url" in fields and isinstance(fields["source_url"], str):
+        allowed["source_url"] = fields["source_url"].strip()
     if "ingredients" in fields and isinstance(fields["ingredients"], list):
         allowed["ingredients"] = json.dumps(fields["ingredients"], ensure_ascii=False)
     if "instructions" in fields and isinstance(fields["instructions"], list):

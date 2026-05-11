@@ -161,12 +161,18 @@ textarea::placeholder { color: var(--gray-2); }
 /* ─── Filters row ─── */
 .filters {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 10px 16px;
+  flex-direction: column;
+  gap: 10px;
   margin-bottom: 20px;
   padding-bottom: 16px;
   border-bottom: 1px solid var(--gray-3);
+}
+
+.filter-segs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 16px;
 }
 
 /* ─── Search ─── */
@@ -517,7 +523,22 @@ textarea::placeholder { color: var(--gray-2); }
   width: 200px;
 }
 
-.edit-title:focus, .edit-servings:focus { border-color: var(--black); }
+.edit-title:focus, .edit-servings:focus, .edit-fonte:focus { border-color: var(--black); }
+
+.edit-fonte {
+  display: block;
+  width: 100%;
+  font-family: var(--sans);
+  font-size: 12px;
+  color: var(--gray-2);
+  letter-spacing: 0.03em;
+  border: none;
+  border-bottom: 1px solid var(--gray-3);
+  background: transparent;
+  outline: none;
+  padding: 4px 0;
+  margin-top: 6px;
+}
 
 .ingredients li.edit-row {
   display: flex;

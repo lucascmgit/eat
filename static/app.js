@@ -251,8 +251,9 @@ function renderList(items) {
 editBtn.addEventListener("click", enterEditMode);
 cancelBtn.addEventListener("click", () => showDetail(currentRecipe));
 saveBtn.addEventListener("click", async () => {
-  const title    = ($("edit-title-input")?.value    || "").trim();
-  const servings = ($("edit-servings-input")?.value || "").trim();
+  const title      = ($("edit-title-input")?.value    || "").trim();
+  const servings   = ($("edit-servings-input")?.value || "").trim();
+  const source_url = ($("edit-fonte-input")?.value    || "").trim();
   if (!title) return;
 
   const ingredients = [...$("d-ingredients").querySelectorAll("li.edit-row")].map(li => ({
@@ -267,7 +268,7 @@ saveBtn.addEventListener("click", async () => {
   saveBtn.disabled = true;
   try {
     const updated = await patchJSON(`${API}/recipes/${currentRecipe.slug}`, {
-      title, servings, ingredients, instructions,
+      title, servings, source_url, ingredients, instructions,
     });
     const idx = recipes.findIndex(r => r.slug === updated.slug);
     if (idx !== -1) recipes[idx] = updated;
@@ -287,6 +288,13 @@ function enterEditMode() {
 
   $("d-title").innerHTML = `<input id="edit-title-input" class="edit-title" value="${esc(currentRecipe.title)}">`;
   $("d-meta").innerHTML  = `<input id="edit-servings-input" class="edit-servings" value="${esc(currentRecipe.servings || "")}" placeholder="Rendimento…">`;
+
+  const _specialSrc = ["texto colado", "foto de livro"];
+  const fonteInput = document.createElement("input");
+  fonteInput.id = "edit-fonte-input"; fonteInput.type = "url"; fonteInput.className = "edit-fonte";
+  fonteInput.value = _specialSrc.includes(currentRecipe.source_url || "") ? "" : (currentRecipe.source_url || "");
+  fonteInput.placeholder = "URL da fonte…";
+  $("d-meta").after(fonteInput);
 
   const ingList = $("d-ingredients");
   ingList.innerHTML = currentRecipe.ingredients.map(ing => `
@@ -333,6 +341,7 @@ function showDetail(recipe) {
   currentRecipe = recipe;
   $("add-ing-btn")?.remove();
   $("add-step-btn")?.remove();
+  $("edit-fonte-input")?.remove();
   editBtn.style.display   = "inline-block";
   saveBtn.style.display   = "none";
   cancelBtn.style.display = "none";
