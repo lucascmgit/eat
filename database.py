@@ -9,10 +9,15 @@ from typing import Optional
 from urllib.parse import urlparse
 
 _data = os.getenv("DATA_DIR")
-DB_PATH = Path(_data) / "recipes.db" if _data else Path(__file__).parent / "recipes.db"
+DB_PATH      = Path(_data) / "recipes.db" if _data else Path(__file__).parent / "recipes.db"
+RECIPES_DIR  = Path(_data) / "recipes"    if _data else Path(__file__).parent / "recipes"
+RECIPES_DIR.mkdir(exist_ok=True)
 
 VALID_TIPO   = {"salgado", "doce", "bebida"}
 VALID_STATUS = {"quero_fazer", "ja_fiz"}
+
+_TIPO_LABEL   = {"salgado": "Salgado", "doce": "Doce", "bebida": "Bebida"}
+_STATUS_LABEL = {"quero_fazer": "Quero fazer", "ja_fiz": "Já fiz"}
 
 
 def get_db():
@@ -45,6 +50,10 @@ def init_db():
             except Exception:
                 pass
         conn.commit()
+    # backfill .md for any recipe that doesn't have one yet
+    for recipe in get_all_recipes():
+        if not (RECIPES_DIR / f"{recipe['slug']}.md").exists():
+            _write_md(recipe)
 
 
 def slugify(text: str) -> str:
@@ -87,7 +96,9 @@ def save_recipe(data: dict) -> dict:
             ),
         )
         conn.commit()
-    return get_recipe_by_slug(slug)
+    recipe = get_recipe_by_slug(slug)
+    _write_md(recipe)
+    return recipe
 
 
 def update_recipe(slug: str, fields: dict) -> Optional[dict]:
@@ -118,7 +129,10 @@ def update_recipe(slug: str, fields: dict) -> Optional[dict]:
             (*allowed.values(), slug),
         )
         conn.commit()
-    return get_recipe_by_slug(slug)
+    recipe = get_recipe_by_slug(slug)
+    if recipe:
+        _write_md(recipe)
+    return recipe
 
 
 def get_sources() -> list:
@@ -188,3 +202,30 @@ def _row_to_dict(row) -> dict:
     d["ingredients"] = json.loads(d["ingredients"])
     d["instructions"] = json.loads(d["instructions"])
     return d
+
+
+def _write_md(recipe: dict):
+    lines = [f"# {recipe['title']}", ""]
+
+    if recipe.get("servings"):
+        lines.append(f"**Rendimento:** {recipe['servings']}  ")
+    lines.append(f"**Tipo:** {_TIPO_LABEL.get(recipe.get('tipo', ''), recipe.get('tipo', ''))}  ")
+    lines.append(f"**Status:** {_STATUS_LABEL.get(recipe.get('status', ''), recipe.get('status', ''))}  ")
+    src = recipe.get("source_url", "")
+    if src and src not in ("texto colado", "foto de livro"):
+        lines.append(f"**Fonte:** {src}  ")
+    lines.append("")
+
+    lines += ["## Ingredientes", ""]
+    for ing in recipe.get("ingredients", []):
+        qty = ing.get("quantity", "").strip()
+        item = ing.get("item", "").strip()
+        lines.append(f"- {(qty + ' ') if qty else ''}{item}")
+    lines.append("")
+
+    lines += ["## Modo de Preparo", ""]
+    for i, step in enumerate(recipe.get("instructions", []), 1):
+        lines.append(f"{i}. {step}")
+    lines.append("")
+
+    (RECIPES_DIR / f"{recipe['slug']}.md").write_text("\n".join(lines), encoding="utf-8")
