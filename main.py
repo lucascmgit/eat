@@ -1,8 +1,10 @@
 from fastapi import FastAPI, HTTPException, UploadFile, File
+from fastapi.responses import JSONResponse, Response
 from fastapi.staticfiles import StaticFiles
 from pathlib import Path
 from pydantic import BaseModel
 from typing import Optional
+import json
 import os
 import database
 import extractor
@@ -73,9 +75,22 @@ async def add_recipe_from_image(file: UploadFile = File(...)):
         raise HTTPException(status_code=400, detail=str(e))
 
 
+@app.get("/api/export")
+def export_recipes():
+    recipes = database.get_all_recipes()
+    content = json.dumps(recipes, ensure_ascii=False, indent=2)
+    return Response(
+        content=content,
+        media_type="application/json",
+        headers={"Content-Disposition": "attachment; filename=eat-backup.json"},
+    )
+
+
 @app.post("/api/recipes/import")
-def import_recipe(data: dict):
+def import_recipe(data: dict | list):
     try:
+        if isinstance(data, list):
+            return [database.save_recipe(r) for r in data]
         return database.save_recipe(data)
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))

@@ -23,22 +23,20 @@ def migrate(api_base: str, db_path: str = "recipes.db"):
     rows = conn.execute("SELECT * FROM recipes ORDER BY created_at").fetchall()
     print(f"Found {len(rows)} recipes locally\n")
 
-    client = httpx.Client(timeout=30)
-    ok = fail = 0
+    recipes = []
     for row in rows:
         d = dict(row)
         d["ingredients"]  = json.loads(d["ingredients"])
         d["instructions"] = json.loads(d["instructions"])
-        try:
-            r = client.post(f"{api_base}/api/recipes/import", json=d)
-            r.raise_for_status()
-            print(f"  ✓ {d['title']}")
-            ok += 1
-        except Exception as e:
-            print(f"  ✗ {d['title']}: {e}")
-            fail += 1
+        recipes.append(d)
 
-    print(f"\nDone — {ok} imported, {fail} failed")
+    client = httpx.Client(timeout=60)
+    try:
+        r = client.post(f"{api_base}/api/recipes/import", json=recipes)
+        r.raise_for_status()
+        print(f"Done — {len(recipes)} recipes imported")
+    except Exception as e:
+        print(f"Failed: {e}")
 
 if __name__ == "__main__":
     if len(sys.argv) < 2:
