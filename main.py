@@ -73,6 +73,14 @@ async def add_recipe_from_image(file: UploadFile = File(...)):
         raise HTTPException(status_code=400, detail=str(e))
 
 
+@app.post("/api/recipes/import")
+def import_recipe(data: dict):
+    try:
+        return database.save_recipe(data)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
 @app.get("/api/recipes")
 def list_recipes(q: str = "", tipo: str = "", status: str = "", source: str = ""):
     if q:
