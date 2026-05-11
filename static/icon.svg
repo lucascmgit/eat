@@ -1,4 +1,32 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
   <rect width="512" height="512" fill="#000"/>
-  <text x="256" y="348" font-family="'Helvetica Neue',Helvetica,Arial,sans-serif" font-size="260" font-weight="700" fill="#fff" text-anchor="middle" letter-spacing="-8">EAT</text>
+  <defs>
+    <clipPath id="b1"><rect x="0" y="308" width="512" height="512"/></clipPath>
+    <clipPath id="b2"><rect x="0" y="336" width="512" height="512"/></clipPath>
+    <clipPath id="b3"><rect x="0" y="308" width="512" height="512"/></clipPath>
+  </defs>
+
+  <!-- Tube 1 (left): cx=160, rx=48, ry=22, top=158, bot=308 -->
+  <rect x="112" y="158" width="96" height="150" fill="#B07C10"/>
+  <rect x="112" y="158" width="48" height="150" fill="#EDD040"/>
+  <ellipse cx="160" cy="308" rx="48" ry="22" clip-path="url(#b1)" fill="#6E4C06"/>
+  <rect x="132" y="158" width="56" height="150" fill="#0a0a0a"/>
+  <ellipse cx="160" cy="158" rx="48" ry="22" fill="#EDD040"/>
+  <ellipse cx="160" cy="158" rx="28" ry="13" fill="#0a0a0a"/>
+
+  <!-- Tube 2 (center): cx=256, rx=48, ry=22, top=128, bot=336 -->
+  <rect x="208" y="128" width="96" height="208" fill="#B07C10"/>
+  <rect x="208" y="128" width="48" height="208" fill="#EDD040"/>
+  <ellipse cx="256" cy="336" rx="48" ry="22" clip-path="url(#b2)" fill="#6E4C06"/>
+  <rect x="228" y="128" width="56" height="208" fill="#0a0a0a"/>
+  <ellipse cx="256" cy="128" rx="48" ry="22" fill="#EDD040"/>
+  <ellipse cx="256" cy="128" rx="28" ry="13" fill="#0a0a0a"/>
+
+  <!-- Tube 3 (right): cx=352, rx=48, ry=22, top=158, bot=308 -->
+  <rect x="304" y="158" width="96" height="150" fill="#B07C10"/>
+  <rect x="304" y="158" width="48" height="150" fill="#EDD040"/>
+  <ellipse cx="352" cy="308" rx="48" ry="22" clip-path="url(#b3)" fill="#6E4C06"/>
+  <rect x="324" y="158" width="56" height="150" fill="#0a0a0a"/>
+  <ellipse cx="352" cy="158" rx="48" ry="22" fill="#EDD040"/>
+  <ellipse cx="352" cy="158" rx="28" ry="13" fill="#0a0a0a"/>
 </svg>
