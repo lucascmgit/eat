@@ -3,12 +3,13 @@ from fastapi.staticfiles import StaticFiles
 from pathlib import Path
 from pydantic import BaseModel
 from typing import Optional
-import shutil
+import os
 import database
 import extractor
 
-IMAGES_DIR = Path(__file__).parent / "static" / "images"
-IMAGES_DIR.mkdir(exist_ok=True)
+_data = os.getenv("DATA_DIR")
+IMAGES_DIR = Path(_data) / "images" if _data else Path(__file__).parent / "static" / "images"
+IMAGES_DIR.mkdir(parents=True, exist_ok=True)
 
 app = FastAPI(title="EAT")
 database.init_db()
@@ -111,4 +112,5 @@ async def upload_image(slug: str, file: UploadFile = File(...)):
     return database.update_recipe(slug, {"image_url": image_url})
 
 
+app.mount("/images", StaticFiles(directory=str(IMAGES_DIR)), name="recipe-images")
 app.mount("/", StaticFiles(directory="static", html=True), name="static")

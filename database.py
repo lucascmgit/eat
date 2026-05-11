@@ -2,12 +2,14 @@ import sqlite3
 import json
 import re
 import unicodedata
+import os
 from datetime import datetime
 from pathlib import Path
 from typing import Optional
 from urllib.parse import urlparse
 
-DB_PATH = Path(__file__).parent / "recipes.db"
+_data = os.getenv("DATA_DIR")
+DB_PATH = Path(_data) / "recipes.db" if _data else Path(__file__).parent / "recipes.db"
 
 VALID_TIPO   = {"salgado", "doce", "bebida"}
 VALID_STATUS = {"quero_fazer", "ja_fiz"}
